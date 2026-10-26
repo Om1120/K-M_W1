@@ -8,13 +8,96 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================================
-     1. WEB AUDIO API SYNTHESIZER & SOUND EFFECTS
+     1. ROMANTIC MUSIC PLAYER & SOUND EFFECTS
+        Song: "Channa Ve - Bhoot (Karaoke Version)" (kV5tb0ftlQE)
+        Fallback: Romantic Web Audio API Music Box Chimes
      ============================================================ */
-  let audioCtx = null;
+  const YOUTUBE_VIDEO_ID = 'kV5tb0ftlQE'; // Channa Ve (Karaoke Version)
+  let ytPlayer = null;
+  let isYtReady = false;
   let isMusicPlaying = false;
+  let userWantsMusic = false;
+  let activeAudioMode = 'none'; // 'youtube' | 'local' | 'synth'
+  let audioCtx = null;
   let musicTimer = null;
+
   const musicToggleBtn = document.getElementById('musicToggleBtn');
   const bgMusicAudio = document.getElementById('bgMusic');
+
+  // Initialize YouTube IFrame Player
+  function setupYouTubePlayer() {
+    const initPlayer = () => {
+      if (ytPlayer || !document.getElementById('ytPlayer') || typeof window.YT === 'undefined' || !window.YT.Player) return;
+      try {
+        ytPlayer = new window.YT.Player('ytPlayer', {
+          height: '200',
+          width: '200',
+          videoId: YOUTUBE_VIDEO_ID,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            enablejsapi: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            loop: 1,
+            playlist: YOUTUBE_VIDEO_ID, // Required for loop in YouTube iframe API
+            modestbranding: 1,
+            playsinline: 1,
+            rel: 0
+          },
+          events: {
+            onReady: (event) => {
+              isYtReady = true;
+              try {
+                event.target.setVolume(85);
+              } catch (e) {}
+              if (userWantsMusic && !isMusicPlaying) {
+                startMusicPlayback();
+              }
+            },
+            onStateChange: (event) => {
+              // 1 = PLAYING, 2 = PAUSED, 0 = ENDED, 3 = BUFFERING
+              if (event.data === 1) {
+                isMusicPlaying = true;
+                activeAudioMode = 'youtube';
+                updateMusicButtonUI(true);
+              } else if (event.data === 2) {
+                if (activeAudioMode === 'youtube') {
+                  isMusicPlaying = false;
+                  updateMusicButtonUI(false);
+                }
+              } else if (event.data === 0) {
+                if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                  ytPlayer.playVideo();
+                }
+              }
+            },
+            onError: (event) => {
+              console.warn('YouTube player error:', event.data, 'falling back to romantic synthesizer');
+              if (userWantsMusic) {
+                playSynthesizedFallback();
+              }
+            }
+          }
+        });
+      } catch (err) {
+        console.warn('Could not initialize YouTube Player:', err);
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      initPlayer();
+    } else {
+      const prevOnReady = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function() {
+        if (typeof prevOnReady === 'function') prevOnReady();
+        initPlayer();
+      };
+    }
+  }
+
+  setupYouTubePlayer();
 
   function initAudioContext() {
     if (!audioCtx) {
@@ -25,6 +108,86 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
+    }
+  }
+
+  function startMusicPlayback() {
+    userWantsMusic = true;
+    initAudioContext();
+
+    // 1. Try local audio file first if provided
+    if (bgMusicAudio && bgMusicAudio.getAttribute('src') && bgMusicAudio.getAttribute('src').trim() !== '') {
+      bgMusicAudio.play().then(() => {
+        isMusicPlaying = true;
+        activeAudioMode = 'local';
+        updateMusicButtonUI(true);
+      }).catch(() => {
+        playYouTubeOrFallback();
+      });
+      return;
+    }
+
+    playYouTubeOrFallback();
+  }
+
+  function playYouTubeOrFallback() {
+    if (isYtReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+      try {
+        ytPlayer.playVideo();
+        activeAudioMode = 'youtube';
+        isMusicPlaying = true;
+        updateMusicButtonUI(true);
+        return;
+      } catch (e) {
+        console.warn('ytPlayer.playVideo failed:', e);
+      }
+    }
+
+    // If YouTube is still initializing, indicate connecting and timeout to fallback
+    if (!isYtReady) {
+      updateMusicButtonUI(true, 'Connecting 🎵...');
+      setTimeout(() => {
+        if (userWantsMusic && !isMusicPlaying) {
+          playSynthesizedFallback();
+        }
+      }, 2600);
+      return;
+    }
+
+    playSynthesizedFallback();
+  }
+
+  function playSynthesizedFallback() {
+    activeAudioMode = 'synth';
+    isMusicPlaying = true;
+    startSynthesizedMelody();
+    updateMusicButtonUI(true);
+  }
+
+  function stopMusicPlayback() {
+    userWantsMusic = false;
+    isMusicPlaying = false;
+
+    if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+      try {
+        ytPlayer.pauseVideo();
+      } catch (e) {}
+    }
+
+    if (bgMusicAudio && !bgMusicAudio.paused) {
+      bgMusicAudio.pause();
+    }
+
+    stopSynthesizedMelody();
+    activeAudioMode = 'none';
+    updateMusicButtonUI(false);
+  }
+
+  function toggleMusicPlayback() {
+    if (!isMusicPlaying && !userWantsMusic) {
+      startMusicPlayback();
+    } else {
+      stopMusicPlayback();
     }
   }
 
@@ -55,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       
-      // Sine wave with soft harmonic
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
@@ -86,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
     musicTimer = setInterval(() => {
       if (!isMusicPlaying) return;
       playMusicBoxChime(MUSIC_BOX_NOTES[currentNoteIdx], 1.5, 0.09);
-      // occasional sweet harmony note
       if (currentNoteIdx % 3 === 0) {
         setTimeout(() => {
           if (isMusicPlaying) {
@@ -142,49 +303,28 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   }
 
-  // Music toggle handler
+  // Music toggle button click listener
   if (musicToggleBtn) {
     musicToggleBtn.addEventListener('click', () => {
-      initAudioContext();
-
-      if (!isMusicPlaying) {
-        // Try playing local audio file first if user provided one
-        if (bgMusicAudio && bgMusicAudio.src && bgMusicAudio.src !== window.location.href) {
-          bgMusicAudio.play().then(() => {
-            isMusicPlaying = true;
-            updateMusicButtonUI(true);
-          }).catch(() => {
-            // fallback to synthesized music box
-            isMusicPlaying = true;
-            startSynthesizedMelody();
-            updateMusicButtonUI(true);
-          });
-        } else {
-          // Play romantic synthesized music box
-          isMusicPlaying = true;
-          startSynthesizedMelody();
-          updateMusicButtonUI(true);
-        }
-      } else {
-        isMusicPlaying = false;
-        if (bgMusicAudio && !bgMusicAudio.paused) {
-          bgMusicAudio.pause();
-        }
-        stopSynthesizedMelody();
-        updateMusicButtonUI(false);
-      }
+      toggleMusicPlayback();
     });
   }
 
-  function updateMusicButtonUI(playing) {
+  function updateMusicButtonUI(playing, customText) {
     if (!musicToggleBtn) return;
     const label = musicToggleBtn.querySelector('.music-label');
     if (playing) {
       musicToggleBtn.classList.add('is-playing');
-      if (label) label.textContent = 'Music: Playing 🎵';
+      musicToggleBtn.setAttribute('title', 'Playing: Channa Ve (Bhoot) - Click to Pause');
+      if (label) {
+        label.textContent = customText || 'Channa Ve 💗';
+      }
     } else {
       musicToggleBtn.classList.remove('is-playing');
-      if (label) label.textContent = 'Music: Off';
+      musicToggleBtn.setAttribute('title', 'Play Channa Ve (Bhoot)');
+      if (label) {
+        label.textContent = 'Channa Ve: Off';
+      }
     }
   }
 
@@ -444,6 +584,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleAllCandlesExtinguished() {
     playSparkleSound();
+
+    // Auto-start "Channa Ve" romantic song for birthday celebration!
+    if (!isMusicPlaying) {
+      startMusicPlayback();
+    }
 
     // 1. Display: "Yayyy, birthday wish time, Mansi! 💗"
     if (instructionText) {

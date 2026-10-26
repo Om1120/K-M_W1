@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anek+Gujarati:wght@600;700;800&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- YouTube IFrame Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body class="initial-lock">
 
@@ -23,12 +25,21 @@
 
   <!-- Floating Audio & Experience Controls -->
   <div class="audio-control-container">
-    <button id="musicToggleBtn" class="music-pill-btn" aria-label="Toggle romantic background music" title="Play romantic music">
+    <button id="musicToggleBtn" class="music-pill-btn" aria-label="Toggle romantic song: Channa Ve" title="Play romantic song: Channa Ve">
       <span class="music-icon" aria-hidden="true">🎵</span>
-      <span class="music-label">Music: Off</span>
+      <span class="music-label">Channa Ve: Off</span>
+      <span class="music-equalizer" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
     </button>
   </div>
   <audio id="bgMusic" preload="none"></audio>
+  <!-- Background YouTube Audio Host (Channa Ve) -->
+  <div id="youtubePlayerWrapper" class="youtube-player-wrapper" aria-hidden="true">
+    <div id="ytPlayer"></div>
+  </div>
 
   <!-- STICKY HEADER -->
   <header class="site-header">

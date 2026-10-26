@@ -303,6 +303,8 @@ button {
   box-shadow: 0 8px 24px rgba(231, 84, 128, 0.2);
   backdrop-filter: blur(10px);
   transition: var(--transition-smooth);
+  cursor: pointer;
+  user-select: none;
 }
 
 .music-pill-btn:hover {
@@ -315,15 +317,65 @@ button {
   background: linear-gradient(135deg, var(--rose-pink), var(--deep-pink));
   color: white;
   border-color: var(--deep-pink);
+  box-shadow: 0 10px 28px rgba(231, 84, 128, 0.4);
 }
 
 .music-pill-btn.is-playing .music-icon {
   animation: pulseRotate 2s infinite ease-in-out;
 }
 
+/* Playing Equalizer Animation Bars */
+.music-equalizer {
+  display: none;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 13px;
+  margin-left: 2px;
+}
+
+.music-pill-btn.is-playing .music-equalizer {
+  display: inline-flex;
+}
+
+.music-equalizer span {
+  display: block;
+  width: 2.5px;
+  background: currentColor;
+  border-radius: 2px;
+  animation: eqBounce 0.85s infinite ease-in-out alternate;
+}
+
+.music-equalizer span:nth-child(1) { height: 5px; animation-delay: 0.1s; }
+.music-equalizer span:nth-child(2) { height: 13px; animation-delay: 0.3s; }
+.music-equalizer span:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+
+@keyframes eqBounce {
+  0% { height: 3px; }
+  100% { height: 13px; }
+}
+
 @keyframes pulseRotate {
   0%, 100% { transform: scale(1) rotate(0deg); }
   50% { transform: scale(1.2) rotate(15deg); }
+}
+
+/* YouTube Background Audio Host (Invisible to user, actively playing) */
+.youtube-player-wrapper {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  opacity: 0.001;
+  pointer-events: none;
+  z-index: -9999;
+  overflow: hidden;
+}
+
+.youtube-player-wrapper iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
 }
 
 /* ============================================================
