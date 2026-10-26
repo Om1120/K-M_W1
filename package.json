@@ -1,0 +1,19 @@
+{
+  "name": "mansi-birthday-surprise",
+  "version": "1.0.0",
+  "description": "A romantic interactive birthday surprise website for Mansi, from Kevin with love",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "birthday",
+    "romantic",
+    "interactive",
+    "mansi",
+    "kevin"
+  ],
+  "author": "Kevin",
+  "license": "ISC"
+}

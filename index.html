@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="initial-lock">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Mansi | From Kevin With Love 💗</title>
+  <meta name="description" content="A romantic interactive birthday surprise website made with love for Mansi from Kevin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="initial-lock">
+
+  <!-- Floating Scroll-Locked Reminder Toast -->
+  <div class="scroll-locked-toast" id="scrollLockedToast" aria-live="polite" role="status">
+    <span class="toast-icon" aria-hidden="true">🕯️</span>
+    <span class="toast-text">Blow out all 3 candles to unlock the birthday surprise! ✨</span>
+  </div>
+
+  <!-- Background Animated Hearts & Sparkles Canvas -->
+  <canvas id="heartsCanvas" class="hearts-canvas" aria-hidden="true"></canvas>
+
+  <!-- Floating Audio & Experience Controls -->
+  <div class="audio-control-container">
+    <button id="musicToggleBtn" class="music-pill-btn" aria-label="Toggle romantic background music" title="Play romantic music">
+      <span class="music-icon" aria-hidden="true">🎵</span>
+      <span class="music-label">Music: Off</span>
+    </button>
+  </div>
+  <audio id="bgMusic" preload="none"></audio>
+
+  <!-- STICKY HEADER -->
+  <header class="site-header">
+    <a class="header-logo" href="#cakeSection">Happiest birthday Mansi 💗</a>
+    <nav class="header-nav" aria-label="Main Navigation">
+      <a href="#cakeSection">Cake &amp; Wish</a>
+      <a href="#welcomeSection">Welcome</a>
+      <a href="#mansiSection">Why You're Special</a>
+      <a href="#letterSection">Love Letter</a>
+      <a href="#surpriseSection">Surprise</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- SECTION 1: OPENING SCREEN - CAKE WITH 3 CANDLES -->
+    <section class="cake-hero-section" id="cakeSection">
+      <div class="cake-hero-content">
+        <div class="eyebrow-badge">✦ For My Beautiful Birthday Girl ✦</div>
+        <h1 class="cake-hero-title">Hey Mansi, My Love! 💗</h1>
+        <p class="cake-hero-subtitle">I made something special just for you...</p>
+
+        <!-- Tap instruction banner -->
+        <div class="wish-instruction-box" id="wishInstructionBox">
+          <p class="instruction-text" id="instructionText">Tap all 3 candles to make your birthday wish ✨</p>
+          <div class="wish-progress-pill" id="wishProgressPill">
+            <span class="candles-count-badge" id="candlesExtinguishedCount">0</span> of 3 candles blown out 🕯️
+          </div>
+        </div>
+
+        <!-- INTERACTIVE CAKE SCENE -->
+        <div class="cake-scene-wrapper">
+          <div class="cake-glow-halo" id="cakeGlowHalo"></div>
+          
+          <div class="birthday-cake" id="interactiveCake" role="region" aria-label="Interactive Birthday Cake with 3 Candles">
+            
+            <!-- CANDLE ROW -->
+            <div class="candles-container">
+              
+              <!-- CANDLE 1 (Left - Short) -->
+              <div class="candle-wrapper candle-short candle-left" id="candleWrapper1">
+                <button type="button" class="candle-hitbox" id="candleBtn1" aria-label="Blow out left birthday candle" aria-pressed="false">
+                  <div class="candle-flame flame-1" id="flame1">
+                    <div class="flame-core"></div>
+                    <div class="flame-halo"></div>
+                  </div>
+                  <div class="candle-smoke" id="smoke1"></div>
+                  <div class="wick" id="wick1"></div>
+                  <div class="candle-body candle-body-left">
+                    <div class="candle-stripes"></div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- CANDLE 2 (Middle - TALLER & DISTINCT) -->
+              <div class="candle-wrapper candle-tall candle-center" id="candleWrapper2">
+                <button type="button" class="candle-hitbox" id="candleBtn2" aria-label="Blow out middle tall birthday candle" aria-pressed="false">
+                  <div class="candle-flame flame-2 flame-tall" id="flame2">
+                    <div class="flame-core"></div>
+                    <div class="flame-halo"></div>
+                    <span class="sparkle-star" aria-hidden="true">✨</span>
+                  </div>
+                  <div class="candle-smoke" id="smoke2"></div>
+                  <div class="candle-topper" aria-hidden="true">👑</div>
+                  <div class="wick" id="wick2"></div>
+                  <div class="candle-body candle-body-center">
+                    <div class="candle-stripes tall-stripes"></div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- CANDLE 3 (Right - Short) -->
+              <div class="candle-wrapper candle-short candle-right" id="candleWrapper3">
+                <button type="button" class="candle-hitbox" id="candleBtn3" aria-label="Blow out right birthday candle" aria-pressed="false">
+                  <div class="candle-flame flame-3" id="flame3">
+                    <div class="flame-core"></div>
+                    <div class="flame-halo"></div>
+                  </div>
+                  <div class="candle-smoke" id="smoke3"></div>
+                  <div class="wick" id="wick3"></div>
+                  <div class="candle-body candle-body-right">
+                    <div class="candle-stripes"></div>
+                  </div>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- CAKE TIERS & FROSTING -->
+            <div class="cake-structure">
+              <!-- Top Tier -->
+              <div class="cake-tier cake-tier-top">
+                <div class="cream-drip-top"></div>
+                <div class="sprinkles-layer">
+                  <span class="sprinkle s1"></span>
+                  <span class="sprinkle s2"></span>
+                  <span class="sprinkle s3"></span>
+                  <span class="sprinkle s4"></span>
+                  <span class="sprinkle s5"></span>
+                  <span class="sprinkle s6"></span>
+                </div>
+                <div class="sugar-pearls pearls-top"></div>
+              </div>
+
+              <!-- Middle / Bottom Tier -->
+              <div class="cake-tier cake-tier-bottom">
+                <div class="frosting-icing-scallop"></div>
+                <div class="cake-center-heart">💗</div>
+                <div class="sprinkles-layer">
+                  <span class="sprinkle s7"></span>
+                  <span class="sprinkle s8"></span>
+                  <span class="sprinkle s9"></span>
+                  <span class="sprinkle s10"></span>
+                  <span class="sprinkle s11"></span>
+                </div>
+                <div class="sugar-pearls pearls-bottom"></div>
+              </div>
+
+              <!-- Cake Plate Stand -->
+              <div class="cake-plate">
+                <div class="plate-shine"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- UNLOCK BUTTON & SUCCESS MESSAGE (Revealed only after all 3 candles extinguished) -->
+        <div class="unlock-container" id="unlockContainer" aria-live="polite">
+          <div class="unlock-success-message" id="unlockMessage">
+            <span class="confetti-emoji">🎉</span> Yayyy, birthday wish time, Mansi! 💗 <span class="confetti-emoji">✨</span>
+          </div>
+          <a href="#welcomeSection" class="surprise-unlock-btn" id="unlockSurpriseBtn">
+            <span>Open Your Birthday Surprise 💌</span>
+            <span class="btn-sparkle" aria-hidden="true">✨</span>
+          </a>
+        </div>
+
+        <!-- Subtle hint before unlock -->
+        <p class="cake-tap-hint" id="cakeTapHint">Tap each candle above to blow out its flame ♡</p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PERSONALIZED WELCOME -->
+    <section class="welcome-section" id="welcomeSection">
+      <div class="welcome-card-container">
+        <div class="romantic-glass-card welcome-card">
+          <div class="decorative-ribbon" aria-hidden="true">🎀</div>
+          <div class="eyebrow-badge">✦ Welcome To Your Birthday Gift ✦</div>
+          <h2 class="welcome-title">Happy Birthday, Mansi! 🎂💗</h2>
+          <p class="welcome-lead">Today is all about you, my favourite person.</p>
+          <p class="welcome-message">Made with all my love, just for you.</p>
+          <div class="welcome-signature">
+            <span class="signature-text">Forever yours, Kevin ❤️</span>
+          </div>
+          
+          <div class="scroll-encouragement">
+            <span class="scroll-text">Scroll down, my love... something beautiful awaits</span>
+            <div class="scroll-down-arrow" aria-hidden="true">↓</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MANSI'S NAME & MEANINGS -->
+    <section class="mansi-meanings-section" id="mansiSection">
+      <div class="section-header">
+        <div class="eyebrow-badge">✦ Every Letter Of Your Name ✦</div>
+        <h2 class="section-title">What Makes MANSI So Special? 💗</h2>
+        <p class="section-subtitle">Five little letters that mean the absolute whole world to me.</p>
+      </div>
+
+      <!-- 5 INDIVIDUAL CARDS IN RESPONSIVE GRID -->
+      <div class="mansi-cards-grid">
+        
+        <!-- CARD M -->
+        <article class="letter-card card-m" data-letter="M">
+          <div class="polaroid-frame">
+            <img src="images/IMG-20251027-WA0231.jpg.jpeg" alt="Mansi smiling radiantly under warm glowing fairy lights" class="letter-photo" loading="lazy">
+            <div class="polaroid-pin" aria-hidden="true">✨</div>
+          </div>
+          <div class="letter-card-body">
+            <div class="letter-badge-wrapper">
+              <span class="big-letter">M</span>
+              <span class="letter-word">— Magical ✨</span>
+            </div>
+            <p class="letter-quote">"You make even my most ordinary days feel magical just by being in them."</p>
+          </div>
+        </article>
+
+        <!-- CARD A -->
+        <article class="letter-card card-a" data-letter="A">
+          <div class="polaroid-frame">
+            <img src="images/IMG-20251027-WA0205.jpg.jpeg" alt="Mansi posing with umbrella with an adorable sweet smile" class="letter-photo" loading="lazy">
+            <div class="polaroid-pin" aria-hidden="true">🧸</div>
+          </div>
+          <div class="letter-card-body">
+            <div class="letter-badge-wrapper">
+              <span class="big-letter">A</span>
+              <span class="letter-word">— Adorable 🧸</span>
+            </div>
+            <p class="letter-quote">"Your smile, your little expressions, and everything about you are simply adorable to me."</p>
+          </div>
+        </article>
+
+        <!-- CARD N -->
+        <article class="letter-card card-n" data-letter="N">
+          <div class="polaroid-frame">
+            <img src="images/IMG-20251027-WA0178.jpg.jpeg" alt="Mansi naturally beautiful against historic fort stone wall and scenic green hills" class="letter-photo" loading="lazy">
+            <div class="polaroid-pin" aria-hidden="true">🌸</div>
+          </div>
+          <div class="letter-card-body">
+            <div class="letter-badge-wrapper">
+              <span class="big-letter">N</span>
+              <span class="letter-word">— Naturally Beautiful 🌸</span>
+            </div>
+            <p class="letter-quote">"You have a beauty that goes beyond appearances. The way you are makes you special."</p>
+          </div>
+        </article>
+
+        <!-- CARD S -->
+        <article class="letter-card card-s" data-letter="S">
+          <div class="polaroid-frame">
+            <img src="images/IMG-20251027-WA0196.jpg.jpeg" alt="Mansi glowing elegantly in traditional pink saree in courtyard" class="letter-photo" loading="lazy">
+            <div class="polaroid-pin" aria-hidden="true">💗</div>
+          </div>
+          <div class="letter-card-body">
+            <div class="letter-badge-wrapper">
+              <span class="big-letter">S</span>
+              <span class="letter-word">— Special 💗</span>
+            </div>
+            <p class="letter-quote">"Out of everyone in this world, you hold a place in my heart that nobody else can ever replace."</p>
+          </div>
+        </article>
+
+        <!-- CARD I -->
+        <article class="letter-card card-i" data-letter="I">
+          <div class="polaroid-frame">
+            <img src="images/IMG-20251027-WA0247.jpg.jpeg" alt="Mansi with endearing glasses and heartwarming smile in green dress" class="letter-photo" loading="lazy">
+            <div class="polaroid-pin" aria-hidden="true">🫶🏻</div>
+          </div>
+          <div class="letter-card-body">
+            <div class="letter-badge-wrapper">
+              <span class="big-letter">I</span>
+              <span class="letter-word">— Irreplaceable 🫶🏻</span>
+            </div>
+            <p class="letter-quote">"There is only one you, Mansi, and I wouldn't trade our story for anything in this world."</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: LOVE NOTE & INTERACTIVE ENVELOPE -->
+    <section class="love-letter-section" id="letterSection">
+      <div class="section-header">
+        <div class="eyebrow-badge">✦ From My Deepest Heart ✦</div>
+        <h2 class="section-title">A Little Letter From Me to You 💌</h2>
+        <p class="section-subtitle">Tap the sealed envelope to open what I've written for you...</p>
+      </div>
+
+      <!-- INTERACTIVE ENVELOPE COMPONENT -->
+      <div class="envelope-interactive-container">
+        
+        <div class="envelope-box" id="envelopeBox" role="button" tabindex="0" aria-label="Tap to open or close Kevin's love letter" aria-expanded="false">
+          
+          <div class="envelope-pocket">
+            <div class="envelope-back-panel"></div>
+            <div class="envelope-paper-preview" id="letterPaperPreview">
+              <div class="preview-heart">♡</div>
+              <p class="preview-text">To Mansi, My Love...</p>
+            </div>
+            <div class="envelope-front-flaps"></div>
+            <div class="envelope-top-flap" id="envelopeTopFlap"></div>
+            <div class="wax-seal" id="waxSeal" aria-hidden="true">
+              <span class="seal-heart">💌</span>
+            </div>
+          </div>
+          
+          <div class="tap-envelope-prompt" id="envelopePrompt">
+            <span>Tap to open your letter ✉️</span>
+          </div>
+
+        </div>
+
+        <!-- FULL UNFOLDED LOVE LETTER (Smoothly slides and unfolds naturally without clipping) -->
+        <article class="parchment-letter-display" id="parchmentLetter" aria-live="polite">
+          <div class="letter-inner-parchment">
+            <div class="letter-corner-decor tl">✿</div>
+            <div class="letter-corner-decor tr">✿</div>
+            <div class="letter-watermark">❤️</div>
+
+            <div class="letter-body-content">
+              <h3 class="letter-greeting">Happy Birthday, Mansi, my love ❤️😘🫶🏻</h3>
+
+              <p class="letter-paragraph">
+                From being best friends for 3.5 years to finally becoming each other's love, our story is my favourite. 🥹❤️ From our first tuition picnic to Dwarka, college bunks, HL Frankie &amp; Momos, Helou Waffles, Rajasthan panipuri, Infinity malls, drives, lies, and mandir visits — every little memory with you is special. 🥹🥹🥹🫂💗
+              </p>
+
+              <p class="letter-paragraph">
+                You're my favourite person, my happiness, and my forever. Here's to making a million more memories together. I love you Mansi! 💋❤️
+              </p>
+
+              <p class="letter-paragraph highlight-sentence">
+                On your very special day
+              </p>
+
+              <p class="letter-paragraph">
+                I just wanted to tell you that always be happy nd do always hardwork for ofcourse me😅
+              </p>
+
+              <p class="letter-closing-cheer">
+                Happy Birthday MY LOVE💋🧿🤗🥰🫂😘😘
+              </p>
+
+              <div class="letter-signature-block">
+                <p class="signature-lead">Forever and always,</p>
+                <p class="signature-name">Your Kevin ❤️</p>
+                <div class="signature-heart-pulse" aria-hidden="true">💗</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SECTION 5: FINAL ROMANTIC BIRTHDAY SURPRISE -->
+    <section class="final-surprise-section" id="surpriseSection">
+      <div class="surprise-content-box">
+        <div class="surprise-flower-accent">🌸 ✦ 💗 ✦ 🌸</div>
+        <div class="eyebrow-badge">✦ One More Birthday Moment ✦</div>
+        <h2 class="surprise-title">One Last Little Surprise for You 💗</h2>
+        <p class="surprise-quote">"If I could make one wish today, it would be to see you happy every single day."</p>
+
+        <button type="button" class="more-love-btn" id="moreLoveBtn" aria-label="Tap for a little more love">
+          <span class="btn-text">Tap for a Little More Love 💋</span>
+          <span class="btn-heart-burst" aria-hidden="true">💖</span>
+        </button>
+
+        <!-- REVEALED EMOTIONAL MESSAGE -->
+        <div class="final-love-reveal" id="finalLoveReveal" aria-live="polite">
+          <div class="final-message-card">
+            <div class="reveal-stars">✨ 💗 ✨</div>
+            <p class="reveal-line-1" id="revealLine1">Mansi, you will always have a special place in my heart. ❤️</p>
+            <p class="reveal-line-2" id="revealLine2">Happy Birthday, My Love! 🎂💗</p>
+            <p class="reveal-line-3" id="revealLine3">Love, Kevin 🫶🏻</p>
+            <div class="end-celebration-hearts">
+              <span>❤️</span><span>💖</span><span>💗</span><span>💕</span><span>❤️</span>
+            </div>
+          </div>
+
+          <div class="relight-action-container">
+            <button type="button" class="relight-cake-btn" id="relightCakeBtn">
+              <span>Relight Birthday Candles 🕯️</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- SINGLE LINE FOOTER -->
+  <footer class="single-line-footer" id="siteFooter">
+    <div class="footer-divider-line" aria-hidden="true"></div>
+    <div class="footer-content">
+      <div class="footer-dedication-box">
+        <p class="footer-love-tag">From kevin with lot's of love</p>
+        <p class="footer-birthday-cheer">Once again happy birthday Mansi baby 🎂✨</p>
+      </div>
+      <a href="#cakeSection" class="back-to-top-link" aria-label="Back to cake">Back to cake &uarr;</a>
+    </div>
+  </footer>
+
+  <!-- CREDITS SECTION (AT THE END) -->
+  <section class="littlewebs-credit-section" aria-label="Credits">
+    <p class="littlewebs-credit-text">Made by LittleWebs with love❤️🫶🏻</p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
