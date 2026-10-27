@@ -720,25 +720,90 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ============================================================
-     6. FINAL SURPRISE SECTION INTERACTION
+     6. FINAL SURPRISE SECTION INTERACTION & PROPOSAL
      ============================================================ */
   const moreLoveBtn = document.getElementById('moreLoveBtn');
+  const proposalContainer = document.getElementById('proposalContainer');
+  const proposalBtnYes = document.getElementById('proposalBtnYes');
+  const proposalBtnOfCourse = document.getElementById('proposalBtnOfCourse');
+  const proposalCelebrationBanner = document.getElementById('proposalCelebrationBanner');
   const finalLoveReveal = document.getElementById('finalLoveReveal');
   const relightCakeBtn = document.getElementById('relightCakeBtn');
 
-  if (moreLoveBtn && finalLoveReveal) {
-    moreLoveBtn.addEventListener('click', () => {
-      initAudioContext();
-      playSparkleSound();
-      triggerRomanticConfetti(55);
+  function playProposalCelebrationSound() {
+    if (!audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      // Beautiful harmonic celebratory chime: C5, E5, G5, B5, C6, E6
+      const notes = [523.25, 659.25, 783.99, 987.77, 1046.50, 1318.51];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+        gain.gain.setValueAtTime(0.06, now + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.09 + 0.65);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + idx * 0.09);
+        osc.stop(now + idx * 0.09 + 0.65);
+      });
+    } catch (e) {}
+  }
 
+  function handleProposalAccepted(chosenOption) {
+    initAudioContext();
+    playProposalCelebrationSound();
+    triggerRomanticConfetti(85);
+
+    if (proposalCelebrationBanner) {
+      const quoteEl = proposalCelebrationBanner.querySelector('.banner-quote');
+      if (quoteEl) {
+        if (chosenOption === 'ofcourse') {
+          quoteEl.textContent = 'Ofcourse yes! Forever and always together, my love 🥹💍💖';
+        } else {
+          quoteEl.textContent = 'Yes! You make my whole world complete, my love 🥹💖';
+        }
+      }
+    }
+
+    if (proposalBtnYes) proposalBtnYes.disabled = true;
+    if (proposalBtnOfCourse) proposalBtnOfCourse.disabled = true;
+
+    if (finalLoveReveal) {
       finalLoveReveal.classList.add('is-active');
-      moreLoveBtn.style.display = 'none';
-
-      // Gentle scroll to revealed message
       setTimeout(() => {
         finalLoveReveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 250);
+    }
+  }
+
+  if (moreLoveBtn && proposalContainer) {
+    moreLoveBtn.addEventListener('click', () => {
+      initAudioContext();
+      playSparkleSound();
+      triggerRomanticConfetti(40);
+
+      moreLoveBtn.style.display = 'none';
+      proposalContainer.style.display = 'block';
+      void proposalContainer.offsetWidth; // force reflow for smooth animation
+      proposalContainer.classList.add('is-active');
+
+      setTimeout(() => {
+        proposalContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
+    });
+  }
+
+  if (proposalBtnYes) {
+    proposalBtnYes.addEventListener('click', () => {
+      handleProposalAccepted('yes');
+    });
+  }
+
+  if (proposalBtnOfCourse) {
+    proposalBtnOfCourse.addEventListener('click', () => {
+      handleProposalAccepted('ofcourse');
     });
   }
 
@@ -773,6 +838,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (moreLoveBtn) {
         moreLoveBtn.style.display = 'inline-flex';
+      }
+      if (proposalContainer) {
+        proposalContainer.classList.remove('is-active');
+        proposalContainer.style.display = 'none';
+      }
+      if (proposalBtnYes) {
+        proposalBtnYes.disabled = false;
+      }
+      if (proposalBtnOfCourse) {
+        proposalBtnOfCourse.disabled = false;
       }
       if (finalLoveReveal) {
         finalLoveReveal.classList.remove('is-active');
